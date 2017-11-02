@@ -1,18 +1,8 @@
+import { HeroService } from './hero.service';
 import { Hero } from './hero';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-const HEROES: Hero[] = [
-  { id: 11, name: 'Mr. Nice' },
-  { id: 12, name: 'Narco' },
-  { id: 13, name: 'Bombasto' },
-  { id: 14, name: 'Celeritas' },
-  { id: 15, name: 'Magneta' },
-  { id: 16, name: 'RubberMan' },
-  { id: 17, name: 'Dynama' },
-  { id: 18, name: 'Dr IQ' },
-  { id: 19, name: 'Magma' },
-  { id: 20, name: 'Tornado' }
-];
+
 /*
  *
  * Component Decorator:
@@ -21,15 +11,37 @@ const HEROES: Hero[] = [
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [HeroService]
 })
-
-export class AppComponent {
+/*
+*   Don't use the new keyword for Services, it will create a new one each time
+*      What if the service caches heroes and shares that cache with others? You couldn't do that.
+*    By using DI the Service will be a singleton
+*
+* Angular component lifecycle: at creation, after each change, and at its eventual destruction
+*/
+export class AppComponent implements OnInit {
   title = 'Revature: Tour of Heroes';
-  heroes = HEROES;
+  heroes: Hero[];
   selectedHero: Hero;
 
+  //init method
+  ngOnInit(): void {
+    this.getHeroes();
+  }
+
+  //Constructor
+  constructor(private heroService: HeroService) {
+  }
+
+  //click fun
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
+  }
+
+  //GETTER
+  getHeroes(): void{
+    this.heroService.getHeroesSlowly().then(heroes => this.heroes = heroes);
   }
 }
