@@ -8,6 +8,10 @@ import { HEROES } from './mock-heroes';
 @Injectable()
 export class HeroService{
 
+  getHero(id: number): Promise<Hero> {
+    return this.getHeroes()
+               .then(heroes => heroes.find(hero => hero.id === id));
+  }
     /*
     *   A Promise essentially promises to call back when the results are ready. 
     *    You ask an asynchronous service to do some work and give it a callback function. 
